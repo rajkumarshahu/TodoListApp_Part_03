@@ -107,7 +107,7 @@ class TodoListTableViewController: UITableViewController {
         return true
     }
     
-    // inside we can declare custom actions for our swiped cell
+    // declaring custom actions for swiped cell
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         // declaring Delete action when swiped cell
@@ -124,19 +124,21 @@ class TodoListTableViewController: UITableViewController {
             self.tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.fade)
         }
         
-        // declaring Delete action when swiped cell
+        // declaring Complete todo action when swiped cell
         let doneAction = UIContextualAction(style: .normal, title: "Complete") {  (contextualAction, view, boolValue) in
 
             if ((UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext) != nil{
            
                 let selectedTodo = self.todos[indexPath.row]
-                selectedTodo.isComplete = true
                 
+                selectedTodo.isComplete = selectedTodo.isComplete ? false : true
+
                 (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
             }
             tableView.reloadData()
         }
-        doneAction.backgroundColor = .yellow
+        doneAction.backgroundColor = .systemYellow
+        deleteAction.backgroundColor = .systemRed
         deleteAction.image = UIImage(systemName: "trash")
         doneAction.image = UIImage(systemName: "checkmark.seal.fill")
         return UISwipeActionsConfiguration(actions: [deleteAction, doneAction])
@@ -148,7 +150,7 @@ class TodoListTableViewController: UITableViewController {
             let selectedTodo = self.todos[indexPath.row]
             self.performSegue(withIdentifier: "TodoDetail", sender: selectedTodo)
         }
-        detailAction.backgroundColor = .blue
+        detailAction.backgroundColor = .systemBlue
         detailAction.image = UIImage(systemName: "eye.fill")
         let configuration = UISwipeActionsConfiguration(actions: [detailAction])
         return configuration
